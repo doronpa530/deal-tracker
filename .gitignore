@@ -1,0 +1,13 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+*.class
+*.so
+.Python
+venv/
+
+# データファイル
+price_history.json
+
+# 環境設定
+.env

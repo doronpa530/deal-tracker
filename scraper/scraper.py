@@ -9,11 +9,12 @@ from datetime import datetime
 # 設定ファイル
 config = {
     "target_items": [
-        {"name": "Amazon Echo Dot", "url": "https://www.amazon.co.jp/dp/B07PDHSPYD/", "normal_price": 5980},
+        {"name": "Amazon Echo Dot (第5世代)", "url": "https://www.amazon.co.jp/dp/B09ZX764ZL/", "normal_price": 5980},
         {"name": "Anker PowerCore", "url": "https://www.amazon.co.jp/dp/B01N0X3NL5/", "normal_price": 2990}
     ],
-    "discount_threshold": 20,  # 20%以上値下げされたら通知
-    "check_interval": 3,  # 3時間ごとにチェック
+    # 他の設定は変更なし
+    "discount_threshold": 20,
+    "check_interval": 3,
     "twitter": {
         "api_key": "YOUR_API_KEY",
         "api_secret": "YOUR_API_SECRET",
@@ -41,20 +42,65 @@ def save_database(db):
 def get_amazon_price(url):
     """Amazonの商品価格を取得する関数"""
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36",
+        "Accept-Language": "ja-JP,ja;q=0.9,en-US;q=0.8,en;q=0.7",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+        "Referer": "https://www.google.com/"
     }
     try:
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers, timeout=10)
+        
+        # レスポンスが正常でない場合はログ出力して終了
+        if response.status_code != 200:
+            print(f"HTTP エラー: {response.status_code}, URL: {url}")
+            return None
+            
         soup = BeautifulSoup(response.text, "html.parser")
         
-        # 価格取得（実際のサイトに合わせて調整が必要）
-        price_element = soup.select_one(".a-price-whole")
-        if price_element:
-            price_text = price_element.text.replace(",", "").strip()
-            return int(price_text)
-        return None
+        # デバッグ用にHTMLを保存（必要に応じてコメント解除）
+        # with open(f"amazon_page_debug.html", "w", encoding="utf-8") as f:
+        #     f.write(response.text)
+        
+        # 複数の価格要素セレクタを試す
+        selectors = [
+            ".a-price .a-offscreen",  # 通常価格表示
+            "#priceblock_ourprice",  # 標準価格
+            "#priceblock_dealprice",  # セール価格
+            ".apexPriceToPay .a-offscreen",  # 新しい価格表示
+            "#corePrice_feature_div .a-price .a-offscreen"  # コア価格要素
+        ]
+        
+        # 価格テキスト取得のための試行
+        price_text = None
+        for selector in selectors:
+            price_element = soup.select_one(selector)
+            if price_element:
+                price_text = price_element.get_text(strip=True)
+                print(f"価格テキスト発見: {price_text}")
+                break
+        
+        # 価格テキストが見つからない場合
+        if not price_text:
+            print(f"価格要素が見つかりませんでした: {url}")
+            return None
+        
+        # 価格テキストから数値だけ抽出
+        import re
+        # 通貨記号や区切り文字を除去
+        price_clean = re.sub(r'[^\d.]', '', price_text)
+        
+        # 数値に変換
+        try:
+            price = int(float(price_clean))
+            return price
+        except ValueError:
+            print(f"価格の変換に失敗しました: {price_text}")
+            return None
+            
     except Exception as e:
-        print(f"Error getting Amazon price: {e}")
+        print(f"Amazonの価格取得中にエラーが発生しました: {str(e)}")
+        import traceback
+        traceback.print_exc()  # スタックトレースを出力
         return None
 
 def get_rakuten_price(url):

@@ -11,3 +11,15 @@ price_history.json
 
 # 環境設定
 .env
+
+# 設定ファイル（機密情報）
+scraper/config.py
+config.py
+
+# データファイル
+price_history.json
+*.db
+
+# デバッグファイル
+debug/
+"@

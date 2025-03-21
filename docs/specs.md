@@ -154,12 +154,12 @@
 deal-tracker/
 ├── .github/
 │   └── workflows/
-│       └── docs.yml              # GitHub Pagesのデプロイ設定
+│       ├── docs.yml              # GitHub Pagesのデプロイ設定
+│       └── hugo.yml              # Hugoサイトのデプロイ設定
 ├── docs/
 │   ├── _config.yml              # GitHub Pages設定
 │   ├── index.md                 # ドキュメントトップページ
 │   ├── specs.md                 # 設計書
-│   ├── extended-specs.md        # 拡張版設計書（このファイル）
 │   ├── progress.md              # 進捗管理
 │   └── structure.md             # プロジェクト構造
 ├── scraper/
@@ -167,56 +167,16 @@ deal-tracker/
 │   ├── requirements.txt         # Pythonパッケージ依存関係
 │   ├── scraper.py               # スクレイピングメインコード
 │   ├── twitter_bot.py           # Twitter連携コード
-│   ├── db_models.py             # データベースモデル（予定）
-│   ├── price_analyzer.py        # 価格分析ロジック（予定）
-│   └── config.py                # 設定ファイル（予定）
-├── database/                    # データベース関連（予定）
-│   ├── migrations/              # データベースマイグレーション
-│   ├── seeds/                   # 初期データ
-│   └── backups/                 # バックアップ
-├── website/                     # Hugoウェブサイト（予定）
+│   ├── db_models.py             # データベースモデル
+│   ├── utils.py                 # ユーティリティ関数
+│   └── config.py                # 設定ファイル
+├── database/                    # データベース関連
+│   └── deal_tracker.db          # SQLiteデータベースファイル
+├── debug/                       # デバッグ用ファイル
+│   └── amazon_debug_*.html      # デバッグ用HTMLファイル
+├── website/                     # Hugoウェブサイト
 │   ├── archetypes/
-│   ├── config.toml
+│   ├── config.yaml              # サイト設定
 │   ├── content/
-│   ├── layouts/
-│   ├── static/
-│   └── themes/
-├── venv/                        # Python仮想環境（Git管理外）
-├── price_history.json           # 価格履歴（初期版、後にDBに移行予定）
-└── README.md                    # プロジェクト概要
-```
-
-## 7. 開発環境情報
-
-- **OS**: Windows 11
-- **Python**: 3.13.1
-- **仮想環境**: venv (プロジェクトルート直下の venv/ フォルダ)
-- **エディタ**: Visual Studio Code
-- **主要パッケージ**:
-  - requests==2.31.0
-  - beautifulsoup4==4.12.2
-  - tweepy==4.14.0
-  - pandas==2.1.0
-  - schedule==1.2.0
-  - sqlalchemy (予定)
-- **バージョン管理**: Git / GitHub
-- **デプロイ**: GitHub Actions
-
-## 8. 今後の開発ステップ
-
-1. **フェーズ1**: 基本機能の実装（現在ここ）
-   - スクレイピングシステムの完成・安定化
-   - Twitter Bot連携
-   - 基本的なWebサイト構築
-
-2. **フェーズ2**: データ基盤強化
-   - SQLiteデータベースへの移行
-   - 「買い時スコア」アルゴリズム実装
-   - 価格推移グラフ表示機能
-
-3. **フェーズ3**: 分析機能強化
-   - 過去データに基づく価格予測
-   - カテゴリ別の価格変動パターン分析
-   - ユーザー行動分析とツイート最適化
-
-この拡張版仕様書により、プロジェクトの方向性と目標がより明確になりました。データ活用と高付加価値情報の提供によって、単なる価格通知サービスから、ユーザーの購買意思決定を強力にサポートするプラットフォームへと発展させることが可能です。
+│   │   ├── _index.md            # トップページ
+│   │   ├── about.md             # サ

@@ -1,0 +1,57 @@
+/* 価格情報スタイル */
+.price-info {
+  background-color: #f5f5f5;
+  padding: 20px;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.current-price {
+  font-size: 1.4em;
+}
+
+.discount {
+  color: #e53935;
+  font-weight: bold;
+}
+
+/* 買い時スコア */
+.buy-score {
+  margin: 20px 0;
+}
+
+.score-bar {
+  background-color: #ddd;
+  border-radius: 4px;
+  height: 20px;
+  width: 100%;
+  margin: 10px 0;
+}
+
+.score-value {
+  background-color: #4caf50;
+  height: 100%;
+  border-radius: 4px;
+}
+
+/* CTAボタン */
+.cta-button {
+  margin: 30px 0;
+  text-align: center;
+}
+
+.buy-button {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: #ff9800;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 1.2em;
+  transition: background-color 0.3s;
+}
+
+.buy-button:hover {
+  background-color: #f57c00;
+}

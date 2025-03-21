@@ -1,0 +1,31 @@
+baseURL: "http://localhost:1313/"
+languageCode: "ja-jp"
+title: "お得なセール情報"
+theme: "PaperMod"
+
+params:
+  defaultTheme: auto
+  ShowShareButtons: true
+  ShowReadingTime: true
+  ShowBreadCrumbs: true
+  author: "セール情報トラッカー"
+  description: "Amazon楽天のセール情報をリアルタイムでお届け"
+
+menu:
+  main:
+    - identifier: amazon
+      name: Amazon特価
+      url: /amazon/
+      weight: 10
+    - identifier: rakuten
+      name: 楽天特価
+      url: /rakuten/
+      weight: 20
+    - identifier: categories
+      name: カテゴリ
+      url: /categories/
+      weight: 30
+    - identifier: about
+      name: サイトについて
+      url: /about/
+      weight: 40

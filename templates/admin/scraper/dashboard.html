@@ -1,0 +1,210 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}スクレイパー管理 - 値下げスカウター{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">スクレイパー管理ダッシュボード</h1>
+
+<!-- 統計情報カード -->
+<div class="row mt-4">
+  <div class="col-xl-3 col-md-6">
+    <div class="card bg-primary text-white mb-4">
+      <div class="card-body">
+        <h5 class="card-title">総商品数</h5>
+        <h2 class="mb-0">{{ stats.item_count }}</h2>
+      </div>
+      <div class="card-footer d-flex align-items-center justify-content-between">
+        <span>アクティブ: {{ stats.active_item_count }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="card bg-success text-white mb-4">
+      <div class="card-body">
+        <h5 class="card-title">価格履歴</h5>
+        <h2 class="mb-0">{{ stats.price_history_count }}</h2>
+      </div>
+      <div class="card-footer d-flex align-items-center justify-content-between">
+        <span>データポイント</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="card bg-warning text-white mb-4">
+      <div class="card-body">
+        <h5 class="card-title">通知数</h5>
+        <h2 class="mb-0">{{ stats.notification_count }}</h2>
+      </div>
+      <div class="card-footer d-flex align-items-center justify-content-between">
+        <span>セール通知</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="card bg-info text-white mb-4">
+      <div class="card-body">
+        <h5 class="card-title">サイト内訳</h5>
+        <div>Amazon: {{ stats.amazon_count }}</div>
+        <div>楽天: {{ stats.rakuten_count }}</div>
+      </div>
+      <div class="card-footer d-flex align-items-center justify-content-between">
+        <span>登録サイト</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- スクレイパーステータス -->
+<div class="row mt-4">
+  <div class="col-xl-6">
+    <div class="card mb-4">
+      <div class="card-header">
+        <i class="fas fa-robot me-1"></i>
+        スクレイパーステータス
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>サイト</th>
+                <th>ステータス</th>
+                <th>最終実行</th>
+                <th>アクション</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Amazon</td>
+                <td>
+                  <span id="amazon-status" class="badge 
+                    {% if status.amazon == 'running' %}bg-success
+                    {% elif status.amazon == 'error' %}bg-danger
+                    {% else %}bg-secondary{% endif %}">
+                    {{ status.amazon }}
+                  </span>
+                </td>
+                <td>{{ status.last_run or 'なし' }}</td>
+                <td>
+                  <form method="POST" action="{{ url_for('scraper.run_scraper') }}" class="d-inline">
+                    <input type="hidden" name="site" value="amazon">
+                    <button type="submit" class="btn btn-sm btn-primary"
+                      {% if status.amazon == 'running' %}disabled{% endif %}>
+                      実行
+                    </button>
+                  </form>
+                  <form method="POST" action="{{ url_for('scraper.stop_scraper') }}" class="d-inline">
+                    <input type="hidden" name="site" value="amazon">
+                    <button type="submit" class="btn btn-sm btn-danger"
+                      {% if status.amazon != 'running' %}disabled{% endif %}>
+                      停止
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              <tr>
+                <td>楽天</td>
+                <td>
+                  <span id="rakuten-status" class="badge
+                    {% if status.rakuten == 'running' %}bg-success
+                    {% elif status.rakuten == 'error' %}bg-danger
+                    {% else %}bg-secondary{% endif %}">
+                    {{ status.rakuten }}
+                  </span>
+                </td>
+                <td>{{ status.last_run or 'なし' }}</td>
+                <td>
+                  <form method="POST" action="{{ url_for('scraper.run_scraper') }}" class="d-inline">
+                    <input type="hidden" name="site" value="rakuten">
+                    <button type="submit" class="btn btn-sm btn-primary"
+                      {% if status.rakuten == 'running' %}disabled{% endif %}>
+                      実行
+                    </button>
+                  </form>
+                  <form method="POST" action="{{ url_for('scraper.stop_scraper') }}" class="d-inline">
+                    <input type="hidden" name="site" value="rakuten">
+                    <button type="submit" class="btn btn-sm btn-danger"
+                      {% if status.rakuten != 'running' %}disabled{% endif %}>
+                      停止
+                    </button>
+                  </form>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 現在の設定 -->
+  <div class="col-xl-6">
+    <div class="card mb-4">
+      <div class="card-header">
+        <i class="fas fa-cogs me-1"></i>
+        現在の設定
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <tbody>
+              <tr>
+                <th>チェック間隔</th>
+                <td>{{ config.check_interval }}時間ごと</td>
+              </tr>
+              <tr>
+                <th>値引きしきい値</th>
+                <td>{{ config.discount_threshold }}%以上</td>
+              </tr>
+              <tr>
+                <th>アクティブ時間</th>
+                <td>{{ config.active_hours.start }}:00 〜 {{ config.active_hours.end }}:00</td>
+              </tr>
+              <tr>
+                <th>アクティブサイト</th>
+                <td>
+                  Amazon: {% if config.active_sites.amazon %}有効{% else %}無効{% endif %}<br>
+                  楽天: {% if config.active_sites.rakuten %}有効{% else %}無効{% endif %}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <a href="{{ url_for('scraper.settings') }}" class="btn btn-primary">
+            <i class="fas fa-edit"></i> 設定を編集
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if status.errors %}
+<!-- エラーログ -->
+<div class="card mb-4">
+  <div class="card-header bg-danger text-white">
+    <i class="fas fa-exclamation-triangle me-1"></i>
+    エラーログ
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>日時</th>
+            <th>メッセージ</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for error in status.errors|reverse %}
+          <tr>
+            <td>{{ error.time }}</td>
+            <td><pre class="mb-0 text-danger">{{ error.message }}</pre></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

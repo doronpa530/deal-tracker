@@ -1,0 +1,83 @@
+/* 値下げスカウター カスタムスタイル */
+
+/* 基本カラー設定 */
+:root {
+    --primary-color: #3273dc;
+    --secondary-color: #ff3860;
+    --amazon-color: #ff9900;
+    --rakuten-color: #bf0000;
+}
+
+/* ヘッダー */
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+/* フッター */
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* 商品カード */
+.card {
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* 買い時スコア */
+.score-gauge {
+    height: 10px;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.score-fill {
+    height: 100%;
+    background-color: var(--primary-color);
+}
+
+.score-fill.excellent {
+    background-color: #28a745;
+}
+
+.score-fill.good {
+    background-color: #17a2b8;
+}
+
+.score-fill.fair {
+    background-color: #ffc107;
+}
+
+.score-fill.poor {
+    background-color: #dc3545;
+}
+
+/* アニメーション */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+
+/* ソートボタンのスタイル */
+.btn-group .btn-outline-primary.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.btn-group .btn-outline-primary:hover:not(.active) {
+    background-color: rgba(50, 115, 220, 0.1);
+}

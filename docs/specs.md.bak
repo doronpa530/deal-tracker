@@ -1,0 +1,56 @@
+ddeal-tracker/
+├── .github/
+│   └── workflows/
+│       └── deploy.yml           # デプロイ設定
+├── docs/
+│   └── ...
+├── scraper/
+│   ├── __pycache__/             # Pythonキャッシュ
+│   ├── requirements.txt         # Pythonパッケージ依存関係
+│   ├── scraper.py               # スクレイピングメインコード
+│   ├── twitter_bot.py           # Twitter連携コード
+│   ├── twitter_selenium.py      # Seleniumによる投稿機能【追加】
+│   ├── browser_utils.py         # ブラウザ設定ユーティリティ【追加】
+│   ├── db_models.py             # データベースモデル
+│   ├── utils.py                 # ユーティリティ関数
+│   ├── config.py                # 設定ファイル
+│   ├── scrape_amazon.py         # Amazon専用スクレイパー【追加】
+│   ├── scrape_rakuten.py        # 楽天専用スクレイパー【追加】
+│   └── scraper_config.json      # スクレイパー設定ファイル【追加】
+├── database/
+│   └── deal_tracker.db          # SQLiteデータベースファイル
+├── debug/
+│   └── amazon_debug*.html       # デバッグ用HTMLファイル
+├── webapp/
+│   ├── app.py                   # Flaskアプリケーションメイン
+│   ├── config.py                # Flask設定
+│   ├── models/                  # データモデル
+│   │   └── ...
+│   ├── routes/                  # ルート定義
+│   │   ├── __init__.py
+│   │   ├── main.py              # メインルート
+│   │   ├── amazon.py            # Amazonルート
+│   │   ├── rakuten.py           # 楽天ルート
+│   │   ├── api.py               # API用ルート
+│   │   ├── admin.py             # 管理画面基本ルート【追加】
+│   │   ├── scraper_admin.py     # スクレイパー管理ルート【追加】
+│   │   └── twitter_admin.py     # Twitter管理ルート【追加】
+│   ├── static/
+│   │   └── ...
+│   ├── templates/
+│   │   ├── ...
+│   │   ├── admin/               # 管理画面テンプレート【追加】
+│   │   │   ├── index.html       # 管理ダッシュボード【追加】
+│   │   │   ├── login.html       # 管理ログイン【追加】
+│   │   │   ├── scraper/         # スクレイパー管理画面【追加】
+│   │   │   │   ├── dashboard.html  # スクレイパーダッシュボード
+│   │   │   │   └── settings.html   # スクレイパー設定
+│   │   │   └── twitter/         # Twitter管理画面
+│   │   │       ├── dashboard.html  # Twitterダッシュボード
+│   │   │       └── settings.html   # Twitter設定
+│   ├── utils/
+│   │   └── ...
+│   ├── requirements.txt
+│   └── wsgi.py
+├── venv/
+└── README.md

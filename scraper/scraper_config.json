@@ -1,0 +1,65 @@
+// scraper/scraper_config.json
+{
+  "amazon": {
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36",
+    "request_delay": 3,
+    "categories": {
+      "electronics": {
+        "name": "家電&カメラ",
+        "url": "https://www.amazon.co.jp/gp/bestsellers/electronics/",
+        "active": true
+      },
+      "computers": {
+        "name": "パソコン・周辺機器",
+        "url": "https://www.amazon.co.jp/gp/bestsellers/computers/",
+        "active": true
+      },
+      "kitchen": {
+        "name": "ホーム&キッチン",
+        "url": "https://www.amazon.co.jp/gp/bestsellers/kitchen/",
+        "active": true
+      },
+      "toys": {
+        "name": "おもちゃ",
+        "url": "https://www.amazon.co.jp/gp/bestsellers/toys/",
+        "active": true
+      }
+    },
+    "time_sale_url": "https://www.amazon.co.jp/deals",
+    "active": true
+  },
+  "rakuten": {
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36",
+    "request_delay": 3,
+    "categories": {
+      "electronics": {
+        "name": "家電",
+        "url": "https://ranking.rakuten.co.jp/daily/100080/",
+        "active": true
+      },
+      "computers": {
+        "name": "パソコン・周辺機器",
+        "url": "https://ranking.rakuten.co.jp/daily/100026/",
+        "active": true
+      },
+      "kitchen": {
+        "name": "キッチン用品",
+        "url": "https://ranking.rakuten.co.jp/daily/100227/",
+        "active": true
+      },
+      "toys": {
+        "name": "おもちゃ",
+        "url": "https://ranking.rakuten.co.jp/daily/100533/",
+        "active": true
+      }
+    },
+    "time_sale_url": "https://event.rakuten.co.jp/timesale/",
+    "active": false
+  },
+  "check_interval": 3,
+  "discount_threshold": 20,
+  "active_hours": {
+    "start": 8,
+    "end": 22
+  }
+}

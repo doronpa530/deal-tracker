@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}サイトについて - 値下げスカウター{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">サイトについて</h1>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h2 class="card-title">値下げスカウターとは？</h2>
+        <p class="card-text">
+            「値下げスカウター」は、Amazon・楽天の商品価格を自動で追跡し、大幅値下げ時に通知するサービスです。
+            AIによる価格分析で「買い時スコア」を算出し、本当にお得なタイミングでの購入をサポートします。
+        </p>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h2 class="card-title">買い時スコアの仕組み</h2>
+        <p class="card-text">
+            「買い時スコア」は、以下の要素から総合的に判断した購入タイミングの最適度を0〜100で表します：
+        </p>
+        <ul>
+            <li><strong>過去の最安値との比較</strong>：過去1年間の最安値と比較（配点40%）</li>
+            <li><strong>季節変動パターン</strong>：季節による価格変動パターンを考慮（配点30%）</li>
+            <li><strong>将来予測との関連性</strong>：今後の値下げ可能性を考慮（配点20%）</li>
+            <li><strong>類似商品との比較</strong>：同カテゴリー内での価格優位性（配点10%）</li>
+        </ul>
+        <p class="card-text">
+            スコアが<strong>80以上</strong>なら「今が買い時」、<strong>50以下</strong>なら「もう少し待った方が良い」と判断できます。
+        </p>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h2 class="card-title">通知方法</h2>
+        <p class="card-text">
+            大幅値下げ情報は以下の方法でお知らせしています：
+        </p>
+        <ol>
+            <li>当サイトでの情報公開</li>
+            <li>Twitter（<a href="https://twitter.com/値下げスカウター" target="_blank">@値下げスカウター</a>）での自動ツイート</li>
+        </ol>
+        <p class="card-text">
+            Twitterをフォローすると、リアルタイムで特価情報をゲットできます！
+        </p>
+        <div class="text-center mt-3">
+            <a href="https://twitter.com/値下げスカウター" class="btn btn-outline-primary">Twitterをフォローする</a>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h2 class="card-title">免責事項</h2>
+        <p class="card-text">
+            当サイトの価格情報は自動収集によるものであり、実際の価格と異なる場合があります。
+            最新かつ正確な情報は、各ECサイトでご確認ください。
+        </p>
+        <p class="card-text">
+            「買い時スコア」はあくまで参考情報であり、将来の価格を保証するものではありません。
+            ご購入の判断は、ご自身の責任において行ってください。
+        </p>
+    </div>
+</div>
+{% endblock %}

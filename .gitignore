@@ -1,25 +1,28 @@
-﻿# Python
+﻿# 環境変数
+.env
+
+# Python関連
 __pycache__/
 *.py[cod]
-*.class
+*$py.class
 *.so
 .Python
 venv/
+ENV/
 
-# データファイル
-price_history.json
-
-# 環境設定
-.env
-
-# 設定ファイル（機密情報）
-scraper/config.py
-config.py
-
-# データファイル
-price_history.json
+# データベース
 *.db
+*.sqlite3
 
 # デバッグファイル
 debug/
-"@
+
+# IDEとエディタの設定
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS固有のファイル
+.DS_Store
+Thumbs.db

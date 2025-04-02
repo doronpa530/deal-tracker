@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}値下げスカウター - 最新セール情報{% endblock %}
+
+{% block content %}
+<div class="jumbotron bg-light p-5 rounded">
+    <h1 class="display-4">値下げスカウター</h1>
+    <p class="lead">Amazon・楽天の商品価格を自動追跡し、大幅値下げ時に通知するサービスです。</p>
+    <hr class="my-4">
+    <p>AIによる買い時スコアで最適な購入タイミングをお知らせします。</p>
+    <div class="d-flex gap-2">
+        <a class="btn btn-primary btn-lg" href="{{ url_for('amazon') }}" role="button">Amazon特価</a>
+        <a class="btn btn-danger btn-lg" href="{{ url_for('rakuten') }}" role="button">楽天特価</a>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-body text-center">
+                <h3 class="card-title">買い時スコア</h3>
+                <p class="card-text">AIによる価格分析で、本当にお得な情報だけをお届け</p>
+                <i class="bi bi-graph-up text-primary" style="font-size: 3rem;"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-body text-center">
+                <h3 class="card-title">価格推移</h3>
+                <p class="card-text">過去の価格データと比較して最安値をチェック</p>
+                <i class="bi bi-calendar-check text-primary" style="font-size: 3rem;"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-body text-center">
+                <h3 class="card-title">通知機能</h3>
+                <p class="card-text">大幅値下げ時に Twitter で自動通知</p>
+                <i class="bi bi-bell text-primary" style="font-size: 3rem;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center">
+    <h2 class="mt-5 mb-4">最新のセール情報</h2>
+    <div class="btn-group">
+        <a href="{{ url_for('home', sort='latest') }}" class="btn btn-sm btn-outline-primary {{ 'active' if sort_by == 'latest' or not sort_by }}">最新順</a>
+        <a href="{{ url_for('home', sort='discount') }}" class="btn btn-sm btn-outline-primary {{ 'active' if sort_by == 'discount' }}">割引率順</a>
+        <a href="{{ url_for('home', sort='score') }}" class="btn btn-sm btn-outline-primary {{ 'active' if sort_by == 'score' }}">買い時スコア順</a>
+    </div>
+</div>
+
+{% if products %}
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for product in products %}
+      {% include 'partials/product_card.html' %}
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="alert alert-info">
+    現在、商品情報はありません。もうしばらくお待ちください。
+  </div>
+{% endif %}
+
+<div class="text-center mt-4">
+  <a href="{{ url_for('amazon') }}" class="btn btn-outline-primary me-2">Amazon特価をもっと見る</a>
+  <a href="{{ url_for('rakuten') }}" class="btn btn-outline-danger">楽天特価をもっと見る</a>
+</div>
+    
+    <div class="col">
+        <div class="card h-100">
+            <div class="position-relative">
+                <span class="position-absolute top-0 start-0 badge bg-danger m-2">40% OFF</span>
+                <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="商品画像">
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Amazon Echo Dot (第5世代)</h5>
+                <p class="card-text">
+                    <span class="text-decoration-line-through">¥7,980</span>
+                    <span class="fs-4 text-danger fw-bold">¥4,780</span>
+                </p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="badge bg-success">買い時スコア: 89</span>
+                    </div>
+                    <a href="#" class="btn btn-sm btn-outline-primary">詳細を見る</a>
+                </div>
+            </div>
+            <div class="card-footer text-muted">
+                <small>更新: 2025.03.28</small>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col">
+        <div class="card h-100">
+            <div class="position-relative">
+                <span class="position-absolute top-0 start-0 badge bg-danger m-2">25% OFF</span>
+                <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="商品画像">
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">シャープ 加湿空気清浄機</h5>
+                <p class="card-text">
+                    <span class="text-decoration-line-through">¥32,800</span>
+                    <span class="fs-4 text-danger fw-bold">¥24,600</span>
+                </p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="badge bg-warning text-dark">買い時スコア: 75</span>
+                    </div>
+                    <a href="#" class="btn btn-sm btn-outline-primary">詳細を見る</a>
+                </div>
+            </div>
+            <div class="card-footer text-muted">
+                <small>更新: 2025.03.27</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center mt-4">
+    <a href="#" class="btn btn-outline-primary">もっと見る</a>
+</div>
+{% endblock %}

@@ -1,0 +1,124 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}スクレイパー設定 - 値下げスカウター{% endblock %}
+
+{% block content %}
+<h1 class="mt-4">スクレイパー設定</h1>
+<div class="card mb-4">
+  <div class="card-header">
+    <i class="fas fa-cogs me-1"></i>
+    スクレイピング設定
+  </div>
+  <div class="card-body">
+    <form method="POST">
+      <!-- 基本設定 -->
+      <div class="mb-4">
+        <h5 class="border-bottom pb-2">基本設定</h5>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="check_interval" class="form-label">チェック間隔（時間）</label>
+            <input type="number" class="form-control" id="check_interval" name="check_interval" 
+                  value="{{ config.check_interval }}" min="1" max="24">
+            <small class="text-muted">価格を確認する間隔（時間単位）</small>
+          </div>
+          <div class="col-md-6">
+            <label for="discount_threshold" class="form-label">値引きしきい値（%）</label>
+            <input type="number" class="form-control" id="discount_threshold" name="discount_threshold" 
+                  value="{{ config.discount_threshold }}" min="5" max="90">
+            <small class="text-muted">通知する最小値引き率</small>
+          </div>
+        </div>
+      </div>
+      
+      <!-- アクティブ時間設定 -->
+      <div class="mb-4">
+        <h5 class="border-bottom pb-2">アクティブ時間設定</h5>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="active_start" class="form-label">開始時間</label>
+            <select class="form-select" id="active_start" name="active_start">
+              {% for hour in range(0, 24) %}
+              <option value="{{ hour }}" {% if config.active_hours.start == hour %}selected{% endif %}>
+                {{ hour }}:00
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label for="active_end" class="form-label">終了時間</label>
+            <select class="form-select" id="active_end" name="active_end">
+              {% for hour in range(0, 24) %}
+              <option value="{{ hour }}" {% if config.active_hours.end == hour %}selected{% endif %}>
+                {{ hour }}:00
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <small class="text-muted">この時間帯のみスクレイピングを実行します</small>
+      </div>
+      
+      <!-- サイト設定 -->
+      <div class="mb-4">
+        <h5 class="border-bottom pb-2">サイト設定</h5>
+        
+        <!-- Amazon設定 -->
+        <div class="card mb-3">
+          <div class="card-header bg-light">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="amazon_active" name="amazon_active"
+                    {% if config.active_sites.amazon %}checked{% endif %}>
+              <label class="form-check-label" for="amazon_active">Amazon</label>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label for="amazon_user_agent" class="form-label">User-Agent</label>
+              <input type="text" class="form-control" id="amazon_user_agent" name="amazon_user_agent"
+                    value="{{ config.user_agents.amazon }}">
+              <small class="text-muted">リクエスト時のブラウザ情報</small>
+            </div>
+            <div class="mb-3">
+              <label for="amazon_delay" class="form-label">リクエスト間隔（秒）</label>
+              <input type="number" class="form-control" id="amazon_delay" name="amazon_delay"
+                    value="{{ config.request_delay.amazon }}" min="1" max="30">
+              <small class="text-muted">各リクエスト間の待機時間（秒）</small>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 楽天設定 -->
+        <div class="card mb-3">
+          <div class="card-header bg-light">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="rakuten_active" name="rakuten_active"
+                    {% if config.active_sites.rakuten %}checked{% endif %}>
+              <label class="form-check-label" for="rakuten_active">楽天</label>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label for="rakuten_user_agent" class="form-label">User-Agent</label>
+              <input type="text" class="form-control" id="rakuten_user_agent" name="rakuten_user_agent"
+                    value="{{ config.user_agents.rakuten }}">
+              <small class="text-muted">リクエスト時のブラウザ情報</small>
+            </div>
+            <div class="mb-3">
+              <label for="rakuten_delay" class="form-label">リクエスト間隔（秒）</label>
+              <input type="number" class="form-control" id="rakuten_delay" name="rakuten_delay"
+                    value="{{ config.request_delay.rakuten }}" min="1" max="30">
+              <small class="text-muted">各リクエスト間の待機時間（秒）</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 送信ボタン -->
+      <div class="text-center">
+        <button type="submit" class="btn btn-primary">設定を保存</button>
+        <a href="{{ url_for('scraper.dashboard') }}" class="btn btn-secondary">キャンセル</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

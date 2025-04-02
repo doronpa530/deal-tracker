@@ -1,0 +1,32 @@
+<div class="col">
+    <div class="card h-100">
+      <div class="position-relative">
+        <span class="position-absolute top-0 start-0 badge bg-danger m-2">{{ product.discount_rate }}% OFF</span>
+        <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}">
+      </div>
+      <div class="card-body">
+        <h5 class="card-title">{{ product.name }}</h5>
+        <p class="card-text">
+          <span class="text-decoration-line-through">¥{{ "{:,}".format(product.regular_price) }}</span>
+          <span class="fs-4 text-danger fw-bold">¥{{ "{:,}".format(product.sale_price) }}</span>
+        </p>
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            {% if product.buy_score >= 80 %}
+              <span class="badge bg-success">買い時スコア: {{ product.buy_score }}</span>
+            {% elif product.buy_score >= 70 %}
+              <span class="badge bg-primary">買い時スコア: {{ product.buy_score }}</span>
+            {% elif product.buy_score >= 50 %}
+              <span class="badge bg-warning text-dark">買い時スコア: {{ product.buy_score }}</span>
+            {% else %}
+              <span class="badge bg-secondary">買い時スコア: {{ product.buy_score }}</span>
+            {% endif %}
+          </div>
+          <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn btn-sm btn-outline-primary">詳細を見る</a>
+        </div>
+      </div>
+      <div class="card-footer text-muted">
+        <small>更新: {{ product.updated_at.strftime('%Y.%m.%d') }}</small>
+      </div>
+    </div>
+  </div>

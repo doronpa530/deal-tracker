@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}検索結果 - 値下げスカウター{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">
+    {% if query %}「{{ query }}」{% endif %}
+    {% if min_price or max_price %}
+        {% if query %}と{% else %}{% endif %}価格
+        {% if min_price %}{{ "{:,}".format(min_price) }}円以上{% endif %}
+        {% if max_price %}
+            {% if min_price %}〜{% endif %}{{ "{:,}".format(max_price) }}円以下
+        {% endif %}
+    {% endif %}
+    {% if category %}
+        {% if query or min_price or max_price %}、{% endif %}
+        カテゴリ「{{ category.name }}」
+    {% endif %}
+    {% if platform %}
+        {% if query or min_price or max_price or category %}、{% endif %}
+        {{ platform }}のみ
+    {% endif %}
+    の検索結果
+</h1>
+
+<div class="mb-3">
+    <p class="text-muted">全 {{ products|length }} 件の商品が見つかりました</p>
+</div>
+
+{% if products %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <p class="text-muted">全 {{ products|length }} 件の商品が見つかりました</p>
+        </div>
+        <div class="btn-group">
+            <a href="{{ url_for('search', q=query, min_price=min_price, max_price=max_price, category=category.id if category else None, platform=platform, sort='latest') }}" class="btn btn-outline-primary {{ 'active' if sort_by == 'latest' or not sort_by }}">最新順</a>
+            <a href="{{ url_for('search', q=query, min_price=min_price, max_price=max_price, category=category.id if category else None, platform=platform, sort='discount') }}" class="btn btn-outline-primary {{ 'active' if sort_by == 'discount' }}">割引率順</a>
+            <a href="{{ url_for('search', q=query, min_price=min_price, max_price=max_price, category=category.id if category else None, platform=platform, sort='score') }}" class="btn btn-outline-primary {{ 'active' if sort_by == 'score' }}">買い時スコア順</a>
+        </div>
+    </div>
+    
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for product in products %}
+            {% include 'partials/product_card.html' %}
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        <h4 class="alert-heading">検索結果が見つかりませんでした</h4>
+        <p>検索条件に一致する商品は見つかりませんでした。検索条件を変更してみてください。</p>
+    </div>
+    
+    <div class="mt-4">
+        <h3>おすすめの検索キーワード</h3>
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{{ url_for('search', q='炊飯器') }}" class="btn btn-outline-primary">炊飯器</a>
+            <a href="{{ url_for('search', q='スマートスピーカー') }}" class="btn btn-outline-primary">スマートスピーカー</a>
+            <a href="{{ url_for('search', q='空気清浄機') }}" class="btn btn-outline-primary">空気清浄機</a>
+            <a href="{{ url_for('search', q='デスク') }}" class="btn btn-outline-primary">デスク</a>
+            <a href="{{ url_for('search', q='ケトル') }}" class="btn btn-outline-primary">ケトル</a>
+        </div>
+    </div>
+{% endif %}
+
+<div class="mt-4">
+    <a href="{{ url_for('home') }}" class="btn btn-outline-secondary">ホームに戻る</a>
+    <a href="{{ url_for('advanced_search', q=query, min_price=min_price, max_price=max_price, category=category.id if category else None, platform=platform) }}" class="btn btn-outline-primary ms-2">検索条件を変更</a>
+</div>
+{% endblock %}

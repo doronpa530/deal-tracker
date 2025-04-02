@@ -1,0 +1,76 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}管理ダッシュボード - 値下げスカウター{% endblock %}
+
+{% block admin_content %}
+<h1 class="mb-4">管理ダッシュボード</h1>
+
+<div class="row">
+  <div class="col-xl-3 col-md-6">
+    <div class="card bg-primary text-white mb-4">
+      <div class="card-body">
+        <h5 class="card-title">スクレイパー管理</h5>
+        <p class="card-text">スクレイピングの設定と制御</p>
+      </div>
+      <div class="card-footer d-flex align-items-center justify-content-between">
+        <a class="small text-white stretched-link" href="{{ url_for('scraper.dashboard') }}">詳細</a>
+        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="card bg-success text-white mb-4">
+      <div class="card-body">
+        <h5 class="card-title">Twitter連携</h5>
+        <p class="card-text">Twitter通知の設定と管理</p>
+      </div>
+      <div class="card-footer d-flex align-items-center justify-content-between">
+        <a class="small text-white stretched-link" href="#">詳細</a>
+        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="card bg-warning text-white mb-4">
+      <div class="card-body">
+        <h5 class="card-title">商品管理</h5>
+        <p class="card-text">追跡商品の追加・編集</p>
+      </div>
+      <div class="card-footer d-flex align-items-center justify-content-between">
+        <a class="small text-white stretched-link" href="#">詳細</a>
+        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="card bg-danger text-white mb-4">
+      <div class="card-body">
+        <h5 class="card-title">システム設定</h5>
+        <p class="card-text">全体パラメータの設定</p>
+      </div>
+      <div class="card-footer d-flex align-items-center justify-content-between">
+        <a class="small text-white stretched-link" href="#">詳細</a>
+        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col-12">
+    <div class="card mb-4">
+      <div class="card-header">
+        <i class="fas fa-info-circle me-1"></i>
+        システム情報
+      </div>
+      <div class="card-body">
+        <ul>
+          <li><strong>アプリケーションバージョン:</strong> 1.0.0</li>
+          <li><strong>最終更新日:</strong> {{ now.strftime('%Y-%m-%d') if now else '2025-03-29' }}</li>
+          <li><strong>環境:</strong> 開発</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

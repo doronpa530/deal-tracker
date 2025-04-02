@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}詳細検索 - 値下げスカウター{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">詳細検索</h1>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form action="{{ url_for('search') }}" method="get">
+            <div class="mb-3">
+                <label for="searchQuery" class="form-label">キーワード</label>
+                <input type="text" class="form-control" id="searchQuery" name="q" value="{{ request.args.get('q', '') }}" placeholder="商品名や説明文に含まれるキーワード">
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="minPrice" class="form-label">最低価格</label>
+                    <div class="input-group">
+                        <span class="input-group-text">¥</span>
+                        <input type="number" class="form-control" id="minPrice" name="min_price" min="0" value="{{ request.args.get('min_price', '') }}" placeholder="下限なし">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="maxPrice" class="form-label">最高価格</label>
+                    <div class="input-group">
+                        <span class="input-group-text">¥</span>
+                        <input type="number" class="form-control" id="maxPrice" name="max_price" min="0" value="{{ request.args.get('max_price', '') }}" placeholder="上限なし">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="category" class="form-label">カテゴリー</label>
+                <select class="form-select" id="category" name="category">
+                    <option value="">すべてのカテゴリー</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}" {% if category.id == category_id %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">プラットフォーム</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="platform" id="platformAll" value="" {% if not platform %}checked{% endif %}>
+                    <label class="form-check-label" for="platformAll">すべて</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="platform" id="platformAmazon" value="Amazon" {% if platform == 'Amazon' %}checked{% endif %}>
+                    <label class="form-check-label" for="platformAmazon">Amazon</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="platform" id="platformRakuten" value="楽天" {% if platform == '楽天' %}checked{% endif %}>
+                    <label class="form-check-label" for="platformRakuten">楽天市場</label>
+                </div>
+            </div>
+            
+            <div class="d-flex">
+                <button type="submit" class="btn btn-primary">検索</button>
+                <a href="{{ url_for('home') }}" class="btn btn-outline-secondary ms-2">キャンセル</a>
+                <button type="reset" class="btn btn-outline-danger ms-auto">条件をリセット</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="h5 mb-0">検索のヒント</h2>
+    </div>
+    <div class="card-body">
+        <ul class="mb-0">
+            <li>複数のキーワードはスペースで区切って入力すると、すべてのキーワードを含む商品が検索されます</li>
+            <li>価格範囲を指定する場合は、最低価格と最高価格の両方、または片方だけ指定できます</li>
+            <li>カテゴリーとプラットフォームを組み合わせると、より絞り込まれた結果が表示されます</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

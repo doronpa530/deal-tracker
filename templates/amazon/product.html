@@ -1,0 +1,308 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} - 値下げスカウター{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('home') }}">ホーム</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('amazon') if product.platform == 'Amazon' else url_for('rakuten') }}">
+      {{ product.platform }}特価
+    </a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+  </ol>
+</nav>
+
+<div class="row">
+  <!-- 商品画像 -->
+  <div class="col-md-5 mb-4">
+    <div class="card">
+      <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}">
+    </div>
+  </div>
+  
+  <!-- 商品情報 -->
+  <div class="col-md-7">
+    <h1 class="mb-3">{{ product.name }}</h1>
+    
+    <!-- プラットフォームバッジ -->
+    {% if product.platform == 'Amazon' %}
+      <span class="badge bg-warning text-dark mb-3">Amazon</span>
+    {% else %}
+      <span class="badge bg-danger mb-3">楽天市場</span>
+    {% endif %}
+    
+    <!-- 価格情報 -->
+    <div class="mb-4">
+      <p class="text-muted mb-1">通常価格：</p>
+      <p class="h4 text-decoration-line-through mb-2">¥{{ "{:,}".format(product.regular_price) }}</p>
+      
+      <p class="text-muted mb-1">特価：</p>
+      <div class="d-flex align-items-center">
+        <p class="h2 text-danger fw-bold mb-0">¥{{ "{:,}".format(product.sale_price) }}</p>
+        <span class="badge bg-danger ms-3 fs-6">{{ product.discount_rate }}% OFF</span>
+      </div>
+    </div>
+    
+    <!-- 買い時スコア -->
+    <div class="mb-4">
+      <h3>買い時スコア</h3>
+      
+      {% if product.buy_score >= 90 %}
+        {% set score_class = "excellent" %}
+        {% set score_text = "絶好の買い時！" %}
+      {% elif product.buy_score >= 80 %}
+        {% set score_class = "excellent" %}
+        {% set score_text = "非常にお買い得！" %}
+      {% elif product.buy_score >= 70 %}
+        {% set score_class = "good" %}
+        {% set score_text = "お買い得" %}
+      {% elif product.buy_score >= 60 %}
+        {% set score_class = "good" %}
+        {% set score_text = "良い買い時" %}
+      {% elif product.buy_score >= 40 %}
+        {% set score_class = "fair" %}
+        {% set score_text = "普通" %}
+      {% elif product.buy_score >= 20 %}
+        {% set score_class = "poor" %}
+        {% set score_text = "もう少し待った方が良い" %}
+      {% else %}
+        {% set score_class = "poor" %}
+        {% set score_text = "今は買い時ではない" %}
+      {% endif %}
+      
+      <div class="score-container mb-2">
+        <div class="score-gauge">
+          <div class="score-fill {{ score_class }}" style="width: {{ product.buy_score }}%;"></div>
+        </div>
+        <div class="d-flex justify-content-between">
+          <span class="fw-bold">{{ product.buy_score }}</span>
+          <span class="text-{{ score_class }} fw-bold">{{ score_text }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- CTA ボタン -->
+    <div class="mb-4">
+      <a href="{{ product.affiliate_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-lg btn-primary w-100">
+        商品を購入する
+        <small class="d-block mt-1">
+          {% if product.platform == 'Amazon' %}
+            Amazonで購入
+          {% else %}
+            楽天市場で購入
+          {% endif %}
+        </small>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- 商品説明 -->
+<div class="card mb-4">
+  <div class="card-header">
+    <h2 class="h5 mb-0">商品説明</h2>
+  </div>
+  <div class="card-body">
+    <p>{{ product.description }}</p>
+  </div>
+</div>
+
+<!-- 価格推移グラフセクション -->
+<div class="card mb-4">
+  <div class="card-header">
+    <h2 class="h5 mb-0">価格推移</h2>
+  </div>
+  <div class="card-body">
+    <div class="btn-group mb-3">
+      <button type="button" class="btn btn-outline-primary btn-sm active" data-period="1m">1ヶ月</button>
+      <button type="button" class="btn btn-outline-primary btn-sm" data-period="3m">3ヶ月</button>
+      <button type="button" class="btn btn-outline-primary btn-sm" data-period="6m">6ヶ月</button>
+      <button type="button" class="btn btn-outline-primary btn-sm" data-period="all">全期間</button>
+    </div>
+    <div style="height: 300px;">
+      <canvas id="priceHistoryChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- カテゴリー -->
+<div class="card mb-4">
+  <div class="card-header">
+    <h2 class="h5 mb-0">カテゴリー</h2>
+  </div>
+  <div class="card-body">
+    <a href="#" class="btn btn-outline-secondary btn-sm">{{ product.category.name }}</a>
+  </div>
+</div>
+
+<!-- 下部CTA -->
+<div class="card bg-light mb-4">
+  <div class="card-body text-center">
+    <h3>お得なこの機会をお見逃しなく！</h3>
+    <p class="mb-3">
+      現在、通常価格の{{ product.discount_rate }}%オフ！ まもなく終了するかもしれません。
+    </p>
+    <a href="{{ product.affiliate_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-lg btn-primary">
+      今すぐチェックする
+    </a>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // 価格履歴データの準備（後で動的データに置き換え）
+  const priceHistoryData = {
+    labels: [],
+    prices: []
+  };
+  
+  // ここに価格履歴データを設定するコード
+  if (typeof priceHistoryFromServer !== 'undefined' && priceHistoryFromServer.dates && priceHistoryFromServer.dates.length > 0) {
+    // サーバーから渡されたデータがある場合はそれを使用
+    priceHistoryData.labels = priceHistoryFromServer.dates;
+    priceHistoryData.prices = priceHistoryFromServer.prices;
+  } else {
+    // テスト用のサンプルデータ（実際はサーバーから取得）
+    const today = new Date();
+    for (let i = 30; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+      priceHistoryData.labels.push(date.toISOString().split('T')[0]);
+      
+      // 価格変動シミュレーション
+      let price;
+      if (i > 25) { // 最初はやや高め
+        price = Math.round({{ product.regular_price }} * (1 + Math.random() * 0.05));
+      } else if (i > 15) { // 次に少し下がる
+        price = Math.round({{ product.regular_price }} * (1 - Math.random() * 0.05));
+      } else if (i > 5) { // さらに下がる
+        price = Math.round({{ product.regular_price }} * (1 - 0.05 - Math.random() * 0.1));
+      } else { // 現在の特価
+        price = {{ product.sale_price }};
+      }
+      priceHistoryData.prices.push(price);
+    }
+  }
+
+  // グラフ描画のコードを追加します
+  const ctx = document.getElementById('priceHistoryChart');
+  if (ctx) {
+    const chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: priceHistoryData.labels,
+        datasets: [{
+          label: '価格',
+          data: priceHistoryData.prices,
+          borderColor: '#3273dc',
+          backgroundColor: 'rgba(50, 115, 220, 0.1)',
+          borderWidth: 2,
+          pointBackgroundColor: '#3273dc',
+          pointRadius: 3,
+          fill: true,
+          tension: 0.1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return '¥' + context.raw.toLocaleString();
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: {
+              display: false
+            },
+            ticks: {
+              maxTicksLimit: 10
+            }
+          },
+          y: {
+            beginAtZero: false,
+            ticks: {
+              callback: function(value) {
+                return '¥' + value.toLocaleString();
+              }
+            }
+          }
+        }
+      }
+    });
+    
+    // 期間切り替えボタンのイベントリスナー
+    const periodButtons = document.querySelectorAll('[data-period]');
+    periodButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        // ボタンのアクティブ状態を更新
+        periodButtons.forEach(btn => btn.classList.remove('active'));
+        this.classList.add('active');
+        
+        // 選択された期間
+        const period = this.getAttribute('data-period');
+        
+        // 日付データのフィルタリング
+        let filteredDates = [];
+        let filteredPrices = [];
+        
+        const today = new Date();
+        let cutoffDate;
+        
+        switch(period) {
+          case '1m':
+            cutoffDate = new Date(today);
+            cutoffDate.setMonth(today.getMonth() - 1);
+            break;
+          case '3m':
+            cutoffDate = new Date(today);
+            cutoffDate.setMonth(today.getMonth() - 3);
+            break;
+          case '6m':
+            cutoffDate = new Date(today);
+            cutoffDate.setMonth(today.getMonth() - 6);
+            break;
+          default: // all
+            cutoffDate = new Date(0); // 1970年
+        }
+        
+        const cutoffTime = cutoffDate.getTime();
+        
+        for (let i = 0; i < priceHistoryData.labels.length; i++) {
+          const dataDate = new Date(priceHistoryData.labels[i]).getTime();
+          if (dataDate >= cutoffTime) {
+            filteredDates.push(priceHistoryData.labels[i]);
+            filteredPrices.push(priceHistoryData.prices[i]);
+          }
+        }
+        
+        // グラフデータの更新
+        chart.data.labels = filteredDates;
+        chart.data.datasets[0].data = filteredPrices;
+        chart.update();
+      });
+    });
+    
+    // 初期表示として1ヶ月のデータをフィルタリング
+    const defaultButton = document.querySelector('[data-period="1m"]');
+    if (defaultButton) {
+      defaultButton.click();
+    }
+  } else {
+    console.error('priceHistoryChart canvasが見つかりません');
+  }
+});
+</script>
+{% endblock %}

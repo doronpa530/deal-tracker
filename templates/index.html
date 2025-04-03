@@ -63,13 +63,9 @@
   <div class="alert alert-info">
     現在、商品情報はありません。もうしばらくお待ちください。
   </div>
-{% endif %}
-
-<div class="text-center mt-4">
-  <a href="{{ url_for('amazon') }}" class="btn btn-outline-primary me-2">Amazon特価をもっと見る</a>
-  <a href="{{ url_for('rakuten') }}" class="btn btn-outline-danger">楽天特価をもっと見る</a>
-</div>
-    
+  
+  <!-- サンプルデータ（データがない場合のみ表示） -->
+  <div class="row row-cols-1 row-cols-md-3 g-4">
     <div class="col">
         <div class="card h-100">
             <div class="position-relative">
@@ -119,9 +115,11 @@
             </div>
         </div>
     </div>
-</div>
+  </div>
+{% endif %}
 
 <div class="text-center mt-4">
-    <a href="#" class="btn btn-outline-primary">もっと見る</a>
+  <a href="{{ url_for('amazon') }}" class="btn btn-outline-primary me-2">Amazon特価をもっと見る</a>
+  <a href="{{ url_for('rakuten') }}" class="btn btn-outline-danger">楽天特価をもっと見る</a>
 </div>
 {% endblock %}

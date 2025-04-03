@@ -4,20 +4,39 @@ from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
 from flask import Flask, render_template, request, redirect, url_for, flash
 from scraper.db_models import Session, Item, PriceHistory, Notification, init_db
+from admin_routes import admin_required
 import os
 from datetime import datetime
 import logging
 
-# ロギング設定
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('logs/app.log') if os.path.exists('logs') else logging.StreamHandler(),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger(__name__)
+# --- app.pyの修正 ---
+
+# ロギング設定部分を以下のように修正
+# 既存のロギング設定を削除し、以下に置き換え
+if not logging.getLogger('werkzeug').handlers:
+    log_dir = 'logs'
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+    
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.INFO)
+    
+    # ハンドラの重複を避けるために既存のハンドラをクリア
+    if logger.handlers:
+        logger.handlers.clear()
+    
+    # ファイルハンドラとストリームハンドラを追加
+    file_handler = logging.FileHandler(os.path.join(log_dir, 'app.log'))
+    stream_handler = logging.StreamHandler()
+    
+    # フォーマットを設定
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    file_handler.setFormatter(formatter)
+    stream_handler.setFormatter(formatter)
+    
+    # ハンドラを追加
+    logger.addHandler(file_handler)
+    logger.addHandler(stream_handler)
 
 # アプリケーション初期化
 app = Flask(__name__)
@@ -65,6 +84,84 @@ def home():
 @app.route('/admin')
 def admin_redirect():
     return redirect(url_for('admin.dashboard'))
+
+
+
+@app.route('/amazon/', endpoint="amazon")
+def amazon():
+    session = Session()
+    try:
+        products = session.query(Item).filter_by(site='amazon').order_by(Item.updated_at.desc()).limit(20).all()
+        return render_template('amazon/index.html', products=products, title='Amazon特価情報')  # 'templates/' を削除
+    except Exception as e:
+        logger.error(f"Amazon特価ページ表示エラー: {e}")
+        return render_template('amazon/index.html', products=[], title='Amazon特価情報')  # 'templates/' を削除
+    finally:
+        session.close()
+
+@app.route('/rakuten/', endpoint="rakuten")
+def rakuten():
+    session = Session()
+    try:
+        products = session.query(Item).filter_by(site='rakuten').order_by(Item.updated_at.desc()).limit(20).all()
+        return render_template('rakuten/index.html', products=products, title='楽天特価情報')  # 'templates/' を削除
+    except Exception as e:
+        logger.error(f"楽天特価ページ表示エラー: {e}")
+        return render_template('rakuten/index.html', products=[], title='楽天特価情報')  # 'templates/' を削除
+    finally:
+        session.close()
+
+@app.route('/about/')
+def about():
+    return render_template('about.html', title='サイトについて')
+
+@app.route('/search')
+def search():
+    query = request.args.get('q', '')
+    session = Session()
+    try:
+        if query:
+            # 検索クエリがある場合、商品を検索
+            products = session.query(Item).filter(
+                Item.name.like(f'%{query}%')
+            ).order_by(Item.updated_at.desc()).limit(20).all()
+        else:
+            # 検索クエリがない場合、空のリストを返す
+            products = []
+        
+        return render_template('search_results.html', 
+                              title=f'"{query}" の検索結果',
+                              query=query,
+                              products=products)
+    except Exception as e:
+        logger.error(f"検索エラー: {e}")
+        return render_template('search_results.html',
+                              title='検索結果',
+                              query=query,
+                              products=[])
+    finally:
+        session.close()
+
+@app.route('/advanced_search')
+def advanced_search():
+    # カテゴリー一覧を取得
+    session = Session()
+    try:
+        categories = []  # 本来はデータベースからカテゴリー一覧を取得
+        return render_template('advanced_search.html', 
+                              title='詳細検索',
+                              categories=categories,
+                              category_id=request.args.get('category'),
+                              platform=request.args.get('platform'))
+    except Exception as e:
+        logger.error(f"詳細検索ページ表示エラー: {e}")
+        return render_template('advanced_search.html',
+                              title='詳細検索',
+                              categories=[],
+                              category_id=None,
+                              platform=None)
+    finally:
+        session.close()
 
 # エラーハンドラ
 @app.errorhandler(404)
@@ -229,7 +326,16 @@ def stop_scraper():
 def get_scraper_status():
     return jsonify(scraper_status)
 
+# --- app.pyの最下部 ---
+
 # メインエントリポイント
 if __name__ == '__main__':
-    # ローカル環境での実行時のみ
-    app.run(debug=True)
+    # 環境変数からデバッグモードを取得（なければデフォルトでFalse）
+    debug_mode = os.environ.get('FLASK_DEBUG', 'false').lower() == 'true'
+    
+    # デバッグモードが明示的に有効になっていない場合は無効にする
+    if not debug_mode:
+        app.logger.setLevel(logging.INFO)
+        app.logger.handlers = logger.handlers  # ロガーのハンドラを共有
+    
+    app.run(debug=debug_mode, use_reloader=debug_mode)
